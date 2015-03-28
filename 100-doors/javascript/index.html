@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+		<title>100 Doors</title>
+	</head>
+	<body>
+		<script type="text/javascript">
+			function hundred_doors()
+			{
+				var doors = create_doors();
+				for ( var pass = 1; pass <= 100; pass++ )
+				{
+					doors = toggle_doors( doors, pass );
+				}
+				return doors;
+			}
+
+			function create_doors()
+			{
+				var doors = [];
+				for ( var i = 1; i <= 100; i++ )
+				{
+					doors[ i ] = 0;
+				}
+				return doors;
+			}
+
+			function toggle_doors( doors, pass )
+			{
+				for ( var i = 1; i <= 100; i++ )
+				{
+					if( i % pass === 0 )
+					{
+						if ( doors [ i ] === 1 )
+						{
+							doors [ i ] = 0;
+						}
+						else
+						{
+							doors [ i ] = 1;
+						}
+					}
+				}
+				return doors;
+			}
+
+			var doors = hundred_doors();
+		</script>
+	</body>
+</html>
