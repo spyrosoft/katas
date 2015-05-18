@@ -1,0 +1,7 @@
+(let ((current-index) (current-integer))
+  (dotimes (current-index 100)
+	   (setf current-integer (+ 1 current-index))
+	   (cond ((eq 0 (mod current-integer 15)) (print "fizzbuzz"))
+		 ((eq 0 (mod current-integer 5)) (print "buzz"))
+		 ((eq 0 (mod current-integer 3)) (print "fizz"))
+		 (t (print current-integer)))))
