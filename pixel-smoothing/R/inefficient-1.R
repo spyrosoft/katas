@@ -1,47 +1,57 @@
+width <- 3
+height <- 3
+orthogonal_multiplier <- 0.8
+diagonal_multiplier <- 0.4
 
-width = 3
-height = 3
-
-origin_pixels <- matrix( rep( 225, width*height ), width )
-origin_pixels[2,2] = 0
+original_pixels <- matrix( rep( 0, width*height ), width )
+original_pixels[2,2] <- 255
 
 smooth_pixels <- matrix( rep( 0, width*height ), width )
 
-smooth_origin_pixels <- function() {
+smooth_original_pixels <- function() {
     for ( column in 1:width ) {
         for ( row in 1:height ) {
-            average_surrounding_pixels( column, row )
+            smooth_pixels[ column, row ] <- get_smooth_pixel( column, row )
         }
     }
+    print( smooth_pixels )
 }
 
-average_surrounding_pixels <- function( column, row ) {
-    for ( surrounding_column_offset in -1:1 ) {
-        for ( surrounding_row_offset in -1:1 ) {
-            surrounding_column <- column - surrounding_column_offset
-            surrounding_row <- row - surrounding_row_offset
-            
-            orthogonal_multiplier <- 0.2
-            diagonal_multiplier <- 0.1
-            
-            smoothing_pixel <- origin_pixels[ column, row ]
-            
-            if ( surrounding_column > 0 & surrounding_row > 0 & surrounding_column <= width & surrounding_row <= height ) {
-                if ( ( surrounding_column + surrounding_row ) %% 2 == 0 ) {
-#                    print( surrounding_column )
-#                    print( surrounding_row )
-                    print( origin_pixels[ surrounding_column, surrounding_row ] )
+get_smooth_pixel <- function( column, row ) {
+    pixel_total <- 0
+    pixels_to_average <- get_pixels_to_average( column, row )
+    for ( pixel_to_average in pixels_to_average ) {
+        pixel_total <- pixel_total + pixel_to_average
+    }
+    return( round( pixel_average <- pixel_total / length( pixels_to_average ) ) )
+}
+
+get_pixels_to_average <- function( column, row ) {
+    current_pixel <- original_pixels[ column, row ]
+    pixels_to_average <- NULL
+    for ( smoothing_column in -1:1 ) {
+        for ( smoothing_row in -1:1 ) {
+            column_to_smooth <- column + smoothing_column
+            row_to_smooth <- row + smoothing_row
+            if ( column_to_smooth > 0
+            && row_to_smooth > 0
+            && column_to_smooth <= width
+            && row_to_smooth <= height ) {
+                smoothing_pixel <- original_pixels[ column_to_smooth, row_to_smooth ]
+                if ( ( column_to_smooth + row_to_smooth ) %% 2 == 0 ) {
+                    pixel_to_average <- get_pixel_to_average( current_pixel, smoothing_pixel, diagonal_multiplier )
                 } else {
-                    
+                    pixel_to_average <- get_pixel_to_average( current_pixel, smoothing_pixel, orthogonal_multiplier )
                 }
+                pixels_to_average[ length( pixels_to_average ) + 1 ] <- pixel_to_average
             }
         }
     }
-    print("----")
+    return( pixels_to_average )
 }
 
-get_smooth_pixel <- function(  ) {
-    
+get_pixel_to_average <- function( current_pixel, smoothing_pixel, multiplier ) {
+    return( current_pixel - ( current_pixel -  smoothing_pixel ) * multiplier )
 }
 
-smooth_origin_pixels()
+smooth_original_pixels()
