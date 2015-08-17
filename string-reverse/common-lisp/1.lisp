@@ -1,4 +1,3 @@
-;this doesn't work
 (let* ((string-to-reverse "I am a banana.")
        (reversed-string (copy-seq string-to-reverse))
 			(current-string-index))
